@@ -18,7 +18,7 @@ const ModificarArea = ({ areas, setAreas }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="container">
       <h1>Modificar Área</h1>
       <form onSubmit={handleUpdate}>
         <div>
@@ -39,7 +39,12 @@ const ModificarArea = ({ areas, setAreas }) => {
             required
           />
         </div>
-        <button type="submit">Guardar Cambios</button>
+        <div className="button-container">
+          <button type="submit" className="button">Guardar Cambios</button>
+          <button type="button" className="button" onClick={() => navigate("/areas")}>
+            Cancelar
+          </button>
+        </div>
       </form>
     </div>
   );

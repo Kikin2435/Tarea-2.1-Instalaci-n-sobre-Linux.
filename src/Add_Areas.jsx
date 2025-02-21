@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Estilos.css"; // Se importa el CSS para aplicar los estilos
 
 const AddAreas = ({ setAreas }) => {
   const [nombre, setNombre] = useState("");
@@ -13,28 +14,30 @@ const AddAreas = ({ setAreas }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="container">
       <h1>Agregar Área</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input
-            type="text"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            required
-          />
+        <label htmlFor="nombre">Nombre:</label>
+        <input
+          id="nombre"
+          type="text"
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+
+        <label htmlFor="ubicacion">Ubicación:</label>
+        <input
+          id="ubicacion"
+          type="text"
+          value={ubicacion}
+          onChange={(e) => setUbicacion(e.target.value)}
+          required
+        />
+
+        <div className="button-container">
+          <button type="submit" className="button agregar">Agregar</button>
         </div>
-        <div>
-          <label>Ubicación:</label>
-          <input
-            type="text"
-            value={ubicacion}
-            onChange={(e) => setUbicacion(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Agregar</button>
       </form>
     </div>
   );

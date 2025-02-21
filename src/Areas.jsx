@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import "./Estilos.css"; // Se importa el CSS global
 
 const Areas = ({ areas, setAreas }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -25,52 +26,47 @@ const Areas = ({ areas, setAreas }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="container">
       <h1>Página de Áreas</h1>
 
-      <table border="1" style={{ margin: "auto", width: "50%", textAlign: "center" }}>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Ubicación</th>
-          </tr>
-        </thead>
-        <tbody>
-          {areas.length > 0 ? (
-            areas.map((area, index) => (
-              <tr
-                key={index}
-                onClick={() => handleRowClick(index)}
-                style={{
-                  backgroundColor: selectedIndex === index ? "lightblue" : "white",
-                  cursor: "pointer",
-                }}
-              >
-                <td>{area.nombre}</td>
-                <td>{area.ubicacion}</td>
-              </tr>
-            ))
-          ) : (
+      <div className="table-container">
+        <table className="styled-table">
+          <thead>
             <tr>
-              <td colSpan="2">No hay áreas registradas</td>
+              <th>Nombre</th>
+              <th>Ubicación</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {areas.length > 0 ? (
+              areas.map((area, index) => (
+                <tr
+                  key={index}
+                  onClick={() => handleRowClick(index)}
+                  className={selectedIndex === index ? "selected-row" : ""}
+                >
+                  <td>{area.nombre}</td>
+                  <td>{area.ubicacion}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="2">No hay áreas registradas</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-      <div style={{ marginTop: "20px" }}>
-        <button>
-          <Link to="/add_areas">Agregar</Link>
-        </button>
-        <button disabled={selectedIndex === null} onClick={handleModify}>
+      <div className="button-container">
+        <Link to="/add_areas" className="button">Agregar</Link>
+        <button className="button" disabled={selectedIndex === null} onClick={handleModify}>
           Modificar
         </button>
-        <button disabled={selectedIndex === null} onClick={handleDelete}>
+        <button className="button" disabled={selectedIndex === null} onClick={handleDelete}>
           Eliminar
         </button>
-        <button>
-            <Link to="/">Regresar</Link>
-        </button>
+        <Link to="/" className="button">Regresar</Link>
       </div>
     </div>
   );

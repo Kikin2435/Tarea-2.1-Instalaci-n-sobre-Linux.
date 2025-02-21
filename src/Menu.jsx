@@ -1,16 +1,18 @@
 import { Link } from "react-router-dom";
-import "./styles.css";
+import "./Estilos.css"; // Importamos los estilos
 
 const Menu = () => {
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Menú</h1>
-      <button>
-        <Link to="/inventario">Inventario</Link>
-      </button>
-      <button>
-        <Link to="/areas">Áreas</Link>
-      </button>
+    <div className="container">
+      <h1 className="titulo-menu">Menú Principal</h1>
+      <div className="button-container">
+        <Link to="/inventario" className="button menu">
+          📦 Inventario
+        </Link>
+        <Link to="/areas" className="button menu">
+          🏢 Áreas
+        </Link>
+      </div>
     </div>
   );
 };

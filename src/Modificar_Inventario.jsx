@@ -13,7 +13,7 @@ const ModificarInventario = ({ inventario, setInventario, obtenerAreas }) => {
   const [fechaAdquisicion, setFechaAdquisicion] = useState(item?.fechaAdquisicion || "");
   const [tipoAdquisicion, setTipoAdquisicion] = useState(item?.tipoAdquisicion || "");
   const [observaciones, setObservaciones] = useState(item?.observaciones || "");
-  const [areasSeleccionadas, setAreasSeleccionadas] = useState(item?.areas || []);
+  const [areaSeleccionada, setAreaSeleccionada] = useState(item?.areas?.[0]?.nombre || ""); 
   const [areasDisponibles, setAreasDisponibles] = useState([]);
 
   useEffect(() => {
@@ -28,14 +28,6 @@ const ModificarInventario = ({ inventario, setInventario, obtenerAreas }) => {
     cargarAreas();
   }, []);
 
-  const handleAreaChange = (area) => {
-    setAreasSeleccionadas((prev) =>
-      prev.some((a) => a.nombre === area.nombre)
-        ? prev.filter((a) => a.nombre !== area.nombre)
-        : [...prev, area]
-    );
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (index === undefined) return;
@@ -48,7 +40,7 @@ const ModificarInventario = ({ inventario, setInventario, obtenerAreas }) => {
       fechaAdquisicion,
       tipoAdquisicion,
       observaciones,
-      areas: areasSeleccionadas,
+      areas: areasDisponibles.filter((area) => area.nombre === areaSeleccionada),
     };
 
     const updatedInventario = [...inventario];
@@ -58,7 +50,7 @@ const ModificarInventario = ({ inventario, setInventario, obtenerAreas }) => {
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
+    <div className="container">
       {index === undefined ? (
         <h1>Error: No hay datos para modificar</h1>
       ) : (
@@ -100,24 +92,24 @@ const ModificarInventario = ({ inventario, setInventario, obtenerAreas }) => {
               <input type="text" value={observaciones} onChange={(e) => setObservaciones(e.target.value)} />
             </div>
             <div>
-              <label>Áreas:</label>
-              {areasDisponibles.length > 0 ? (
-                areasDisponibles.map((area, i) => (
-                  <div key={i}>
-                    <input
-                      type="checkbox"
-                      checked={areasSeleccionadas.some((a) => a.nombre === area.nombre)}
-                      onChange={() => handleAreaChange(area)}
-                    />
-                    <label>{area.nombre}</label>
-                  </div>
-                ))
-              ) : (
-                <p>No hay áreas disponibles</p>
-              )}
+              <label>Área:</label>
+              <select value={areaSeleccionada} onChange={(e) => setAreaSeleccionada(e.target.value)} required>
+                <option value="">Selecciona un área</option>
+                {areasDisponibles.length > 0 ? (
+                  areasDisponibles.map((area, i) => (
+                    <option key={i} value={area.nombre}>
+                      {area.nombre}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>No hay áreas disponibles</option>
+                )}
+              </select>
             </div>
-            <button type="submit">Guardar Cambios</button>
-            <button type="button" onClick={() => navigate("/inventario")}>Cancelar</button>
+            <div className="button-container">
+              <button type="submit" className="button">Guardar Cambios</button>
+              <button type="button" className="button" onClick={() => navigate("/inventario")}>Cancelar</button>
+            </div>
           </form>
         </>
       )}
