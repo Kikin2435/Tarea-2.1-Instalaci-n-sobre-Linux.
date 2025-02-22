@@ -33,6 +33,7 @@ const Areas = ({ areas, setAreas }) => {
         <table className="styled-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nombre</th>
               <th>Ubicación</th>
             </tr>
@@ -45,13 +46,14 @@ const Areas = ({ areas, setAreas }) => {
                   onClick={() => handleRowClick(index)}
                   className={selectedIndex === index ? "selected-row" : ""}
                 >
+                  <td>{index + 1}</td>
                   <td>{area.nombre}</td>
                   <td>{area.ubicacion}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="2">No hay áreas registradas</td>
+                <td colSpan="3">No hay áreas registradas</td>
               </tr>
             )}
           </tbody>

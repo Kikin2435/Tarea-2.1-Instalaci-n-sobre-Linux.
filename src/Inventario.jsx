@@ -36,6 +36,7 @@ const Inventario = ({ inventario, setInventario, setSelectedIndex }) => {
         <table className="styled-table">
           <thead>
             <tr>
+              <th>ID</th>
               <th>Nombre</th>
               <th>Descripción</th>
               <th>Serie</th>
@@ -54,6 +55,7 @@ const Inventario = ({ inventario, setInventario, setSelectedIndex }) => {
                   onClick={() => handleRowClick(index)}
                   className={selectedIndex === index ? "selected-row" : ""}
                 >
+                  <td>{index + 1}</td>
                   <td>{item.nombreCorto || "—"}</td>
                   <td>{item.descripcion || "—"}</td>
                   <td>{item.serie || "—"}</td>
@@ -66,7 +68,7 @@ const Inventario = ({ inventario, setInventario, setSelectedIndex }) => {
               ))
             ) : (
               <tr>
-                <td colSpan="8">No hay elementos en el inventario</td>
+                <td colSpan="9">No hay elementos en el inventario</td>
               </tr>
             )}
           </tbody>
