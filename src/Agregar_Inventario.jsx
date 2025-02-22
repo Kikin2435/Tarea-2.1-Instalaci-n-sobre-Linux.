@@ -121,6 +121,7 @@ const AgregarInventario = ({ setInventario, areas }) => {
 
         <div className="button-container">
           <button type="submit" className="button agregar">Agregar</button>
+          <button type="button" className="button" onClick={() => navigate("/inventario")}>Cancelar</button>
         </div>
       </form>
     </div>

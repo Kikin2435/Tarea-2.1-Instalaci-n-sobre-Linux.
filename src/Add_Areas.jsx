@@ -37,6 +37,9 @@ const AddAreas = ({ setAreas }) => {
 
         <div className="button-container">
           <button type="submit" className="button agregar">Agregar</button>
+          <button type="button" className="button" onClick={() => navigate("/areas")}>
+            Cancelar
+          </button>
         </div>
       </form>
     </div>
