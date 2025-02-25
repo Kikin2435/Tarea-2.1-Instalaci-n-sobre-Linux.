@@ -1,20 +1,30 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Axios from "axios";
 
-const ModificarArea = ({ areas, setAreas }) => {
+const ModificarArea = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { index, area } = location.state || {}; // Datos de la fila seleccionada
+  const { area } = location.state || {}; // Datos de la fila seleccionada
 
-  const [nombre, setNombre] = useState(area?.nombre || "");
-  const [ubicacion, setUbicacion] = useState(area?.ubicacion || "");
+  const [nombre, setNombre] = useState(area?.Nombre || "");
+  const [ubicacion, setUbicacion] = useState(area?.Ubicacion || "");
 
   const handleUpdate = (e) => {
+
     e.preventDefault();
-    const updatedAreas = [...areas];
-    updatedAreas[index] = { nombre, ubicacion };
-    setAreas(updatedAreas);
-    navigate("/areas"); // Volver a la tabla
+
+    Axios.put("http://localhost:3002/modificarArea", {
+      id: area.id,
+      Nombre: nombre,
+      Ubicacion: ubicacion,
+    })
+    .then((response) => {
+      console.log("Area modificada con exito!");
+      navigate("/areas");
+    }).catch((error) => {
+      console.log("Error al modificar aera:", error);
+    });
   };
 
   return (

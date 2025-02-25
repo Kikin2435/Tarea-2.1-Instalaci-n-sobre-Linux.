@@ -1,26 +1,64 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import "./Estilos.css"; // Se importa el CSS global
+import { useState, useEffect } from "react";
+import Axios from "axios";
+import "./Estilos.css"; 
 
-const Areas = ({ areas, setAreas }) => {
+const Areas = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [areas, setAreas] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetch("http://localhost:3002/mostrarAreas")
+      .then((response) => {
+        console.log("Estado de la respuesta:", response.status);
+        console.log("Tipo de contenido:", response.headers.get("content-type"));
+
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Datos recibidos:", data);
+        setAreas(data);
+      })
+      .catch((error) => console.error("Error al cargar las áreas:", error));
+  }, []);
 
   const handleRowClick = (index) => {
     setSelectedIndex(index === selectedIndex ? null : index);
   };
 
   const handleDelete = () => {
-    if (selectedIndex !== null) {
-      setAreas(areas.filter((_, index) => index !== selectedIndex));
-      setSelectedIndex(null);
+    if (selectedIndex !== null && areas[selectedIndex]) {
+      const id_area = areas[selectedIndex].id;
+      console.log("Eliminando área con ID:", id_area);
+
+      Axios.put("http://localhost:3002/eliminarArea", { id: id_area })
+        .then((response) => {
+          console.log("Respuesta del backend:", response.data);
+          
+          setAreas((prevAreas) => prevAreas.filter((ar) => ar.id !== id_area));
+
+          setSelectedIndex(null);
+        })
+        .catch((error) => {
+          console.error("Error al eliminar área:", error);
+          if (error.response && error.response.data.message) {
+            alert(error.response.data.message);
+          } else {
+            alert("Ocurrió un error al eliminar el área.");
+          }
+        });
+    } else {
+      console.error("No se ha seleccionado un área válida.");
     }
   };
 
   const handleModify = () => {
-    if (selectedIndex !== null) {
+    if (selectedIndex !== null && areas[selectedIndex]) {
+      const selectArea = areas[selectedIndex];
+      console.log(selectArea);
       navigate("/modificar_area", {
-        state: { index: selectedIndex, area: areas[selectedIndex] },
+        state: { area: selectArea},
       });
     }
   };
@@ -46,14 +84,14 @@ const Areas = ({ areas, setAreas }) => {
                   onClick={() => handleRowClick(index)}
                   className={selectedIndex === index ? "selected-row" : ""}
                 >
-                  <td>{index + 1}</td>
-                  <td>{area.nombre}</td>
-                  <td>{area.ubicacion}</td>
+                  <td>{area.id}</td>
+                  <td>{area.Nombre}</td>
+                  <td>{area.Ubicacion}</td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="3">No hay áreas registradas</td>
+                <td colSpan={3}>No hay áreas registradas</td>
               </tr>
             )}
           </tbody>

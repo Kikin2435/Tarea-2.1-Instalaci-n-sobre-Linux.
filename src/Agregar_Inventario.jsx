@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 import "./Estilos.css"; 
 
-const AgregarInventario = ({ setInventario, areas }) => {
+const AgregarInventario = () => {
   const [nombreCorto, setNombreCorto] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [serie, setSerie] = useState("");
@@ -10,25 +11,45 @@ const AgregarInventario = ({ setInventario, areas }) => {
   const [fechaAdquisicion, setFechaAdquisicion] = useState("");
   const [tipoAdquisicion, setTipoAdquisicion] = useState("");
   const [observaciones, setObservaciones] = useState("");
+  const [areas, setAreas] = useState([]);
   const [areaSeleccionada, setAreaSeleccionada] = useState(""); 
   const navigate = useNavigate();
 
+useEffect(() => {
+  fetch("http://localhost:3002/listaAreas")
+  .then((response) => {
+    console.log("Estado de la respuesta: ", response.status);
+    console.log("Tipo de contenido: ", response.headers.get("content-type"));
+
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Datos recibidos: ",data);
+    setAreas(data);
+  })
+  .catch();
+}, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setInventario((prev) => [
-      ...prev,
-      {
-        nombreCorto,
-        descripcion,
-        serie,
-        color,
-        fechaAdquisicion,
-        tipoAdquisicion,
-        observaciones,
-        areas: areas.filter((area) => area.nombre === areaSeleccionada), 
-      },
-    ]);
-    navigate("/inventario");
+
+    Axios.put("http://localhost:3002/agregarLibro", {
+      NombreCorto: nombreCorto,
+      Descripcion: descripcion,
+      Serie: serie,
+      Color: color,
+      FechaAdquisicion: fechaAdquisicion,
+      TipoAdquisicion: tipoAdquisicion,
+      Observaciones: observaciones,
+      areaNombre: areaSeleccionada,
+    })
+    .then((response) => {
+      console.log("Libro insertado con exito!");
+      navigate("/inventario");
+    })
+    .catch((error) => {
+      console.log("Error al agregar el area: ", error);
+    });
   };
 
   return (
@@ -111,7 +132,7 @@ const AgregarInventario = ({ setInventario, areas }) => {
           {areas.length > 0 ? (
             areas.map((area, index) => (
               <option key={index} value={area.nombre}>
-                {area.nombre}
+                {area.Nombre}
               </option>
             ))
           ) : (

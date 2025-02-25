@@ -1,29 +1,64 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Axios from "axios";
 import "./Estilos.css"; // Importa los estilos generales
 
-const Inventario = ({ inventario, setInventario, setSelectedIndex }) => {
-  const [selectedIndex, setLocalSelectedIndex] = useState(null);
+const Inventario = () => {
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [libros, setLibros] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    fetch("http://localhost:3002/mostrarLibros")
+    .then((response) => {
+      console.log("Estado de la respuesta: ", response.status);
+      console.log("Tipo de contenido:", response.headers.get("content-type"));
+
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Datos recibidos!", data);
+      setLibros(data);
+    })
+    .catch((error) => console.error("Error al cargar los libros: ", error));
+  }, []);
+
   const handleRowClick = (index) => {
-    setLocalSelectedIndex(index === selectedIndex ? null : index);
-    setSelectedIndex(index);
+    setSelectedIndex(index === selectedIndex ? null : index);
   };
 
   const handleDelete = () => {
     if (selectedIndex !== null) {
-      const updatedInventario = inventario.filter((_, index) => index !== selectedIndex);
-      setInventario(updatedInventario);
-      setLocalSelectedIndex(null);
-      setSelectedIndex(null);
+      const id_libro = libros[selectedIndex].id;
+
+      Axios.put("http://localhost:3002/eliminarLibro", {
+        id: id_libro,
+      })
+      .then((response) => {
+        console.log("Respuesta del backend: ", response.data);
+
+        setLibros((prevLibros) => prevLibros.filter((ar) => ar.id !== id_libro));
+
+        setSelectedIndex(null);
+      })
+      .catch((error) => {
+        console.error("Error al eliminar libro: ", error);
+        if(error.response && error.response.data.message){
+          alert(error.response.data.message);
+        } else {
+          alert("Ocurrio un error al eliminar el libro!");
+        }
+      })
+    } else {
+      console.error("No se ha seleccionado un libro valido!");
     }
   };
 
   const handleModify = () => {
     if (selectedIndex !== null) {
+      const select = libros[selectedIndex];
       navigate("/modificar_inventario", {
-        state: { item: inventario[selectedIndex], index: selectedIndex },
+        state: {item: select}
       });
     }
   };
@@ -48,22 +83,22 @@ const Inventario = ({ inventario, setInventario, setSelectedIndex }) => {
             </tr>
           </thead>
           <tbody>
-            {inventario.length > 0 ? (
-              inventario.map((item, index) => (
+            {libros.length > 0 ? (
+              libros.map((item, index) => (
                 <tr
                   key={index}
                   onClick={() => handleRowClick(index)}
                   className={selectedIndex === index ? "selected-row" : ""}
                 >
-                  <td>{index + 1}</td>
-                  <td>{item.nombreCorto || "—"}</td>
-                  <td>{item.descripcion || "—"}</td>
-                  <td>{item.serie || "—"}</td>
-                  <td>{item.color || "—"}</td>
-                  <td>{item.fechaAdquisicion || "—"}</td>
-                  <td>{item.tipoAdquisicion || "—"}</td>
-                  <td>{item.observaciones || "—"}</td>
-                  <td>{item.areas?.filter(a => a.nombre).map(a => a.nombre).join(", ") || "—"}</td>
+                  <td>{item.id}</td>
+                  <td>{item.NombreCorto || "—"}</td>
+                  <td>{item.Descripcion || "—"}</td>
+                  <td>{item.Serie || "—"}</td>
+                  <td>{item.Color || "—"}</td>
+                  <td>{item.FechaAdquisicion || "—"}</td>
+                  <td>{item.TipoAdquisicion || "—"}</td>
+                  <td>{item.Observaciones || "—"}</td>
+                  <td>{item.Areas || "—"}</td>
                 </tr>
               ))
             ) : (

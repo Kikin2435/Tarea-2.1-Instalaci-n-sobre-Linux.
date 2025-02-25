@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Axios from "axios";
 import "./Estilos.css"; // Se importa el CSS para aplicar los estilos
 
 const AddAreas = ({ setAreas }) => {
@@ -9,10 +10,19 @@ const AddAreas = ({ setAreas }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setAreas((prevAreas) => [...prevAreas, { nombre, ubicacion }]);
-    navigate("/areas"); // Redirige de vuelta a Áreas
-  };
 
+    Axios.post("http://localhost:3002/crearArea", {
+      nombre: nombre,
+      ubicacion: ubicacion,
+    })
+      .then((response) => {
+        console.log("Área insertada con éxito!");
+        navigate("/areas");
+      })
+      .catch((error) => {
+        console.error("Error al agregar el área:", error);
+      });
+  };
   return (
     <div className="container">
       <h1>Agregar Área</h1>
